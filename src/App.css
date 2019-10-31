@@ -1,10 +1,15 @@
-.App {
-  text-align: center;
+body {
+  background-color: rgb(55, 55, 55);
 }
 
-.App-logo {
-  height: 40vmin;
+.App {
+  color: whitesmoke;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  margin-top: 10vh;
 }
+
 
 .App-header {
   background-color: #282c34;
@@ -17,6 +22,63 @@
   color: white;
 }
 
-.App-link {
-  color: #09d3ac;
+input[type=text] {
+  width: 100%;
+  background-color: rgb(55, 55, 55);
+  color: whitesmoke;
+  border: none;
+  border-bottom: 2px solid red;
+  outline: none;
+  padding: 12px 20px;
+  margin: 8px 0;
+  font-size: 1.5em;
+}
+
+.task-input{
+  width: 50%;
+  display: flex;
+  justify-content: center;
+}
+
+#btn {
+  font-size: 1em;
+}
+
+.input-button {
+  font-size: 1.25em;
+  background-color: inherit;
+  border: none;
+  border-bottom: 2px solid red;
+  color: #4CAF50;
+  padding: 12px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin: 8px 0;
+  cursor: pointer;
+  outline: none;
+  font-weight: 900;
+}
+
+.btn-clear {
+  color: red;
+}
+
+.task-list {
+  display: flex;
+  flex-flow: column wrap;
+  margin-top: 10px;
+  width: 90vw;
+  align-content: center;
+}
+
+.task-item{
+    display: flex;
+    justify-content: space-between;
+    width: 30vw;
+}
+
+.item {
+  font-size: 1.5rem;
+  padding: 15px;
 }
