@@ -6,12 +6,12 @@ import { CalContext } from './context/store'
 // var chrono = require('chrono-node');
 
 function App() {
-  // const data = chrono.parseDate('An appointment on Sep 12-13');
-  // console.log(data, typeof(data))
-  // console.log(JSON.stringify(data))
-  const { store, handleClientLoad, handleAuthClick, handleSignoutClick } = useContext(CalContext)
+
+  const { store, handleClientLoad, handleAuthClick, handleSignoutClick, addEvent, deleteEvent } = useContext(CalContext)
   const [tasks, setTasks] = useState([]);
   const inputRef = useRef();
+  const timeZone =  Intl.DateTimeFormat().resolvedOptions().timeZone
+  
   // getFoo()
   
   useEffect(() => {
@@ -28,9 +28,24 @@ function App() {
     let res = chrono.parse(str)[0]
     let task = str.substr(0, res.index).trim();
     let date = res.start.date();
+    let end = res.start.date();
+    end.setHours(date.getHours()+1);
+    
     // console.log(chrono.parseDate(foo).toDateString());
     console.log(res);
-    console.log(task, date.toDateString());
+    let event = {
+                  summary: [task][0],
+                  start:{ 
+                    dateTime: res.start.date().toISOString(),
+                    timeZone: timeZone
+                  },
+                  end:{ 
+                    dateTime: end.toISOString(),
+                    timeZone: timeZone
+                  }
+                }
+    addEvent(event)
+    // console.log(event)
     setTasks([ ...tasks, {task: [task], date: date}])
   }
 
@@ -55,7 +70,17 @@ function App() {
       </div>
 
       <div className="task-list">
-        {tasks.length === 0 ? '':
+        {store.events === null ? '':
+        store.events.map(task =>  {
+          const startTime = new Date(task.start.dateTime).toDateString()
+          return (
+            <div className="task-item">
+              <div className="item">{task.summary}</div>
+              <div className="item">{startTime}</div>
+              <button className="input-button btn-clear event-btn-delete" type="button" onClick={() => deleteEvent(task.id)}>✗</button>
+            </div>
+          )})}
+        {/* {tasks.length === 0 ? '':
         tasks.map(task =>  {
           console.log(task)
           return (
@@ -63,7 +88,7 @@ function App() {
               <div className="item">{task.task}</div>
               <div className="item">{task.date.toDateString()}</div>
             </div>
-          )})}
+          )})} */}
           </div>
         {store && 
           <div className="auth">

@@ -64,6 +64,10 @@ input[type=text] {
   color: red;
 }
 
+.event-btn-delete {
+  border-bottom: none;
+}
+
 .task-list {
   display: flex;
   flex-flow: column wrap;

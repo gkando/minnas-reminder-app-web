@@ -8,11 +8,10 @@ const reducer = (state, action) => {
         ...state,
         auth: action.payload
       }
-    case "SET_USER":
+    case "SET_EVENTS":
       return {
         ...state,
-        id: action.payload.user.id,
-        token: action.payload.token
+        events: action.payload
       }
     case "SIGNUP_SUCCESS":
       return{
@@ -30,9 +29,10 @@ export const CalContext = createContext();
     cal_name: 'primary',
     gCalConfig,
     auth: false,
+    events: null,
     email: null,
     token: null,
-    id: null, 
+    id: null,
     img: null, 
     reg_complete: false
   };
@@ -44,7 +44,7 @@ export const Provider = props => {
   //   globalPath: 'window.gapi',
   //   url: 'https://apis.google.com/js/api.js'
   // }
-  const timeZone =  Intl.DateTimeFormat().resolvedOptions().timeZone
+  const calId = 'i62k5g6dj6b8el7d1pdogvdtj8@group.calendar.google.com'
 
   var CLIENT_ID = state.gCalConfig.clientId;
   var API_KEY = state.gCalConfig.apiKey;
@@ -53,7 +53,7 @@ export const Provider = props => {
   var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
   // Authorization scopes required by the API; multiple scopes can be
   // included, separated by spaces.
-  var SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
+  var SCOPES = "https://www.googleapis.com/auth/calendar";
   var authorizeButton = '';
   var signoutButton = '';
   // Actions
@@ -136,7 +136,7 @@ export const Provider = props => {
    */
   function listUpcomingEvents() {
     window.gapi.client.calendar.events.list({
-      'calendarId': 'primary',
+      'calendarId': calId,
       'timeMin': (new Date()).toISOString(),
       'showDeleted': false,
       'singleEvents': true,
@@ -144,6 +144,7 @@ export const Provider = props => {
       'orderBy': 'startTime'
     }).then(function(response) {
       var events = response.result.items;
+      dispatch({ type: "SET_EVENTS", payload:events });
       appendPre('Upcoming events:');
       if (events.length > 0) {
         for (let i = 0; i < events.length; i++) {
@@ -160,6 +161,33 @@ export const Provider = props => {
       }
     });
   }
+
+  function addEvent(event){
+    console.log('addEvent:  ', event)
+      return window.gapi.client.calendar.events.insert({
+        "calendarId": calId,
+        "resource": event
+      })
+          .then(function(response) {
+                  // Handle the results here (response.result has the parsed body).
+                  console.log("Response", response);
+                },
+                function(err) { console.error("Execute error", err); });
+    
+  }
+
+  function deleteEvent(id) {
+    console.log(id)
+    return window.gapi.client.calendar.events.delete({
+      "calendarId": calId,
+      "eventId": id
+    }).then(function(response) {
+              // Handle the results here (response.result has the parsed body).
+              console.log("Response", response);
+            },
+            function(err) { console.error("Execute error", err); });
+  }
+
   function getFoo() {
     // console.log('FOO', CLIENT_ID);
   }
@@ -200,7 +228,7 @@ export const Provider = props => {
   }, [state]);
 
   return (
-    <CalContext.Provider value={{store: state, handleClientLoad, handleAuthClick, handleSignoutClick}}>
+    <CalContext.Provider value={{store: state, handleClientLoad, handleAuthClick, handleSignoutClick, addEvent, deleteEvent}}>
       {props.children}
     </CalContext.Provider>
   );

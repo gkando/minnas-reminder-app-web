@@ -1,0 +1,10 @@
+ToDo
+  (1)
+    -C  DONE
+    -R  DONE
+    -U  
+    -D
+
+
+v2
+  -End time for events
