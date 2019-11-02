@@ -144,18 +144,18 @@ export const Provider = props => {
       'orderBy': 'startTime'
     }).then(function(response) {
       var events = response.result.items;
-      dispatch({ type: "SET_EVENTS", payload:events });
       appendPre('Upcoming events:');
       if (events.length > 0) {
-        for (let i = 0; i < events.length; i++) {
-          var event = events[i];
-          console.log(event)
-          var when = event.start.dateTime;
-          if (!when) {
-            when = event.start.date;
-          }
-          appendPre(event.summary + ' (' + when + ')')
-        }
+        dispatch({ type: "SET_EVENTS", payload:events });        
+        // for (let i = 0; i < events.length; i++) {
+        //   var event = events[i];
+        //   console.log(event)
+        //   var when = event.start.dateTime;
+        //   if (!when) {
+        //     when = event.start.date;
+        //   }
+        //   appendPre(event.summary + ' (' + when + ')')
+        // }
       } else {
         appendPre('No upcoming events found.');
       }
@@ -165,11 +165,12 @@ export const Provider = props => {
   function addEvent(event){
     console.log('addEvent:  ', event)
       return window.gapi.client.calendar.events.insert({
-        "calendarId": calId,
-        "resource": event
+          "calendarId": calId,
+          "resource": event
       })
           .then(function(response) {
                   // Handle the results here (response.result has the parsed body).
+                  listUpcomingEvents();
                   console.log("Response", response);
                 },
                 function(err) { console.error("Execute error", err); });
@@ -183,9 +184,26 @@ export const Provider = props => {
       "eventId": id
     }).then(function(response) {
               // Handle the results here (response.result has the parsed body).
+              listUpcomingEvents();
               console.log("Response", response);
             },
             function(err) { console.error("Execute error", err); });
+  }
+
+  function updateEvent(event, id) {
+    return window.gapi.client.calendar.events.update({
+      "calendarId": calId,
+      "eventId": id,
+      "resource": {
+        "end": {},
+        "start": {}
+      }
+    })
+        .then(function(response) {
+                // Handle the results here (response.result has the parsed body).
+                console.log("Response", response);
+              },
+              function(err) { console.error("Execute error", err); });
   }
 
   function getFoo() {
