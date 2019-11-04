@@ -22,7 +22,7 @@ body {
   color: white;
 }
 
-input[type=text] {
+#task {
   width: 100%;
   background-color: rgb(55, 55, 55);
   color: whitesmoke;
@@ -69,7 +69,7 @@ input[type=text] {
 }
 
 .task-list {
-  display: flex;
+  /* display: flex; */
   flex-flow: column wrap;
   margin-top: 10px;
   width: 90vw;
@@ -79,10 +79,42 @@ input[type=text] {
 .task-item{
     display: flex;
     justify-content: space-between;
-    width: 30vw;
+    width: 50vw;
+    align-items: center;
 }
 
 .item {
-  font-size: 1.5rem;
+  font-size: 1rem;
   padding: 15px;
+}
+
+
+/* TABLE TESTING STYLES */
+
+#students {
+  text-align: center;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#students td,
+#students th {
+  padding: 8px;
+}
+
+/* #students tr:nth-child(even) {
+  background-color: #f2f2f2;
+} */
+
+#students tr:hover {
+  background-color: rgba(165, 165, 165, 0.502);
+}
+
+#students th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color: #2f322f93;
+  color: white;
 }

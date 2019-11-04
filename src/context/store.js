@@ -144,7 +144,6 @@ export const Provider = props => {
       'orderBy': 'startTime'
     }).then(function(response) {
       var events = response.result.items;
-      appendPre('Upcoming events:');
       if (events.length > 0) {
         dispatch({ type: "SET_EVENTS", payload:events });        
         // for (let i = 0; i < events.length; i++) {
@@ -157,7 +156,7 @@ export const Provider = props => {
         //   appendPre(event.summary + ' (' + when + ')')
         // }
       } else {
-        appendPre('No upcoming events found.');
+        alert('No upcoming events found.');
       }
     });
   }
@@ -194,16 +193,12 @@ export const Provider = props => {
     return window.gapi.client.calendar.events.update({
       "calendarId": calId,
       "eventId": id,
-      "resource": {
-        "end": {},
-        "start": {}
-      }
-    })
-        .then(function(response) {
-                // Handle the results here (response.result has the parsed body).
-                console.log("Response", response);
-              },
-              function(err) { console.error("Execute error", err); });
+      "resource": event
+    }).then(function(response) {
+      listUpcomingEvents();
+      console.log("Response", response);
+    },
+      function(err) { console.error("Execute error", err); });
   }
 
   function getFoo() {
@@ -246,7 +241,7 @@ export const Provider = props => {
   }, [state]);
 
   return (
-    <CalContext.Provider value={{store: state, handleClientLoad, handleAuthClick, handleSignoutClick, addEvent, deleteEvent}}>
+    <CalContext.Provider value={{store: state, handleClientLoad, handleAuthClick, handleSignoutClick, addEvent, deleteEvent, updateEvent}}>
       {props.children}
     </CalContext.Provider>
   );

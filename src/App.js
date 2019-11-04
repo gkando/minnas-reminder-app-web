@@ -2,6 +2,9 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import './App.css';
 import chrono from 'chrono-node';
 import { CalContext } from './context/store'
+import TimeDatePicker from './components/TimeDatePicker'
+import Events from './components/Events'
+
 
 // var chrono = require('chrono-node');
 
@@ -11,8 +14,11 @@ function App() {
   const [tasks, setTasks] = useState([]);
   const inputRef = useRef();
   const timeZone =  Intl.DateTimeFormat().resolvedOptions().timeZone
-  
-  // getFoo()
+  const hoursFromNow = (n) => new Date(Date.now() + n * 1000 * 60 * 60 ).toISOString();
+
+  // getFoo() 
+  // "2019-11-04T13:00:00-06:00" GOOGLE
+  // "2019-11-07T17:00:00-06:00"
   
   useEffect(() => {
     handleClientLoad();
@@ -53,9 +59,9 @@ function App() {
     inputRef.current.value = '';
   }
 
-  // style={{display: !state.auth ? 'block' : 'none'}}
   
   return (
+    <>
     <div className="App">
       <div className="task-input">
         <input
@@ -71,22 +77,17 @@ function App() {
 
       <div className="task-list">
         {store.events === null ? '':
+          <Events events={store.events} />
+        }
+        {/* {store.events === null ? '':
         store.events.map(task =>  {
           const startTime = new Date(task.start.dateTime).toDateString()
           return (
             <div className="task-item">
               <div className="item">{task.summary}</div>
               <div className="item">{startTime}</div>
+              <TimeDatePicker date={new Date(task.start.dateTime)} id={task.id} summary={task.summary} />
               <button className="input-button btn-clear event-btn-delete" type="button" onClick={() => deleteEvent(task.id)}>✗</button>
-            </div>
-          )})}
-        {/* {tasks.length === 0 ? '':
-        tasks.map(task =>  {
-          console.log(task)
-          return (
-            <div className="task-item">
-              <div className="item">{task.task}</div>
-              <div className="item">{task.date.toDateString()}</div>
             </div>
           )})} */}
           </div>
@@ -97,8 +98,11 @@ function App() {
             </button>
           </div>
         }
+        
         <pre id="content" style={{whiteSpace: 'pre-wrap'}}></pre>
     </div>
+
+    </>
   );
 }
 
