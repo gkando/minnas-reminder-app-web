@@ -10,7 +10,6 @@ body {
   margin-top: 10vh;
 }
 
-
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -31,11 +30,11 @@ body {
   outline: none;
   padding: 12px 20px;
   margin: 8px 0;
-  font-size: 1.5em;
+  font-size: 1.2em;
 }
 
-.task-input{
-  width: 50%;
+.task-input {
+  width: 60vw;
   display: flex;
   justify-content: center;
 }
@@ -49,7 +48,7 @@ body {
   background-color: inherit;
   border: none;
   border-bottom: 2px solid red;
-  color: #4CAF50;
+  color: #4caf50;
   padding: 12px 20px;
   text-align: center;
   text-decoration: none;
@@ -76,18 +75,17 @@ body {
   align-content: center;
 }
 
-.task-item{
-    display: flex;
-    justify-content: space-between;
-    width: 50vw;
-    align-items: center;
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  width: 50vw;
+  align-items: center;
 }
 
 .item {
   font-size: 1rem;
   padding: 15px;
 }
-
 
 /* TABLE TESTING STYLES */
 
