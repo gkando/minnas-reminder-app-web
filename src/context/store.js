@@ -13,6 +13,14 @@ const reducer = (state, action) => {
         ...state,
         events: action.payload
       }
+      case "ADD_EVENT":
+      return {
+        ...state,
+        events: [
+          ...state.events,
+          action.payload,
+        ]
+      };
     case "SIGNUP_SUCCESS":
       return{
         ...state
@@ -29,7 +37,7 @@ export const CalContext = createContext();
     cal_name: 'primary',
     gCalConfig,
     auth: false,
-    events: null,
+    events: [],
     email: null,
     token: null,
     id: null,
@@ -40,25 +48,17 @@ export const CalContext = createContext();
 export const Provider = props => {
 
   const [state, dispatch] = useReducer(reducer, initialState)
-  // const window.gapi = {
-  //   globalPath: 'window.gapi',
-  //   url: 'https://apis.google.com/js/api.js'
-  // }
-  const calId = 'i62k5g6dj6b8el7d1pdogvdtj8@group.calendar.google.com'
 
+  const calId = 'i62k5g6dj6b8el7d1pdogvdtj8@group.calendar.google.com'
   var CLIENT_ID = state.gCalConfig.clientId;
   var API_KEY = state.gCalConfig.apiKey;
-  // console.log(CLIENT_ID)
-  // Array of API discovery doc URLs for APIs used by the quickstart
   var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
-  // Authorization scopes required by the API; multiple scopes can be
-  // included, separated by spaces.
   var SCOPES = "https://www.googleapis.com/auth/calendar";
-  var authorizeButton = '';
-  var signoutButton = '';
+  // var authorizeButton = '';
+  // var signoutButton = '';
+
+
   // Actions
-
-
   function handleClientLoad() {
     window.gapi.load('client:auth2', initClient);
   }
@@ -118,17 +118,7 @@ export const Provider = props => {
   function handleSignoutClick(event) {
     window.gapi.auth2.getAuthInstance().signOut();
   }
-  /**
-   * Append a pre element to the body containing the given message
-   * as its text node. Used to display the results of the API call.
-   *
-   * @param {string} message Text to be placed in pre element.
-   */
-  function appendPre(message) {
-    var pre = document.getElementById('content');
-    var textContent = document.createTextNode(message + '\n');
-    pre.appendChild(textContent);
-  }
+
   /**
    * Print the summary and start datetime/date of the next ten events in
    * the authorized user's calendar. If no events are found an
@@ -163,16 +153,29 @@ export const Provider = props => {
 
   function addEvent(event){
     console.log('addEvent:  ', event)
-      return window.gapi.client.calendar.events.insert({
-          "calendarId": calId,
-          "resource": event
-      })
-          .then(function(response) {
-                  // Handle the results here (response.result has the parsed body).
-                  listUpcomingEvents();
-                  console.log("Response", response);
-                },
-                function(err) { console.error("Execute error", err); });
+    if (state.auth) {
+      console.log("auth");
+      return window.gapi.client.calendar.events
+        .insert({
+          calendarId: calId,
+          resource: event
+        })
+        .then(
+          function(response) {
+            // Handle the results here (response.result has the parsed body).
+            listUpcomingEvents();
+            console.log("Response", response);
+          },
+          function(err) {
+            console.error("Execute error", err);
+          }
+        );
+    } else {
+      // const e = { start: event.start, summary: event.summary };
+      event.id = state.events.length
+      dispatch({ type: "ADD_EVENT", payload: event });
+      return;
+    }
     
   }
 
@@ -200,40 +203,6 @@ export const Provider = props => {
     },
       function(err) { console.error("Execute error", err); });
   }
-
-  function getFoo() {
-    // console.log('FOO', CLIENT_ID);
-  }
-
-  // function getUser(token) {
-  //   const req = `query { me {id, picture, phone, email}}`
-  //   axios({
-  //       url: 'https://netgiver-stage.herokuapp.com/graphql',
-  //       method: 'post',
-  //       data: {
-  //         query: req
-  //       },
-  //       headers: {
-  //         "x-token": token
-  //     },
-  //     }).then((result) => {
-  //       const data = result.data.data.me; 
-  //       console.log("GET_USER:  ", data)
-  //         dispatch({ type: "GET_USER_SUCCESS", payload:data });
-  //     });
-  // };
-
-  // async function addUser(req, img) {
-  //   const res = await axios({
-  //                 url: 'https://netgiver-stage.herokuapp.com/graphql',
-  //                 method: 'post',
-  //                 data: { query: req }
-  //               })
-  //   const data = res.data.data.signUp;
-  //   dispatch({ type: "SET_USER", payload: data })
-  //   // const imgRes = await uploadImageAsync(img, data.token);
-  //   // console.log('IMGRES', imgRes)
-  // }
 
   // logging for testing - comment out if not needed
   useEffect(() => {

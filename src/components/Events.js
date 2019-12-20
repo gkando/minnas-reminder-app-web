@@ -7,7 +7,6 @@ const Events = props => {
 
   const renderTableHeader = () => {
     let header = ['Task', 'Date', 'Date', 'Delete']
-    // let header = Object.keys(students[0]);
     return header.map((key, index) => {
       return <th key={index}>{key.toUpperCase()}</th>;
     });

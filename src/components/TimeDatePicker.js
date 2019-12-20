@@ -49,8 +49,8 @@ const TimeDatePicker = props => {
       }
     }
     updateEvent(event, id);
-
   }
+  
   return (
       <DateTimePicker
         value={selectedDate}
